@@ -1,26 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Tabs } from 'antd';
+import CommitsBetweenRefs from './components/CommitsBetweenRefs';
+import CommitsByDepth from './components/CommitsByDepth';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: '24px' }}>
+      <h1>Git 提交查询</h1>
+      <Tabs
+        items={[
+          {
+            key: '1',
+            label: '引用间提交查询',
+            children: <CommitsBetweenRefs />,
+          },
+          {
+            key: '2',
+            label: '按深度查询提交',
+            children: <CommitsByDepth />,
+          },
+        ]}
+      />
     </div>
   );
-}
+};
 
 export default App;

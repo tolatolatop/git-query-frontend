@@ -1,0 +1,262 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Git Commit 查询服务",
+        "description": "用于查询Git仓库中的提交信息",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/commits/": {
+            "get": {
+                "summary": "获取两个引用之间的提交信息",
+                "description": "获取Git仓库中两个引用之间的所有提交信息\n\n- **repo_url**: Git仓库的URL\n- **start_ref**: 起始引用（可以是分支名、tag名或commit id）\n- **end_ref**: 结束引用（可以是分支名、tag名或commit id）",
+                "operationId": "get_commits_between_commits__get",
+                "parameters": [
+                    {
+                        "name": "repo_url",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Repo Url"
+                        }
+                    },
+                    {
+                        "name": "start_ref",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Start Ref"
+                        }
+                    },
+                    {
+                        "name": "end_ref",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "End Ref"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CommitResponse"
+                                    },
+                                    "title": "Response Get Commits Between Commits  Get"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/commits/by-depth": {
+            "post": {
+                "summary": "获取指定深度的提交信息",
+                "description": "获取Git仓库中从指定引用开始的指定深度的所有提交\n\n- **remote_url**: Git仓库的URL\n- **start_ref**: 起始引用（可以是分支名、tag名或commit id）\n- **max_depth**: 最大深度，-1表示不限制深度",
+                "operationId": "get_commits_by_depth_commits_by_depth_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CommitDepthRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/CommitResponse"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get Commits By Depth Commits By Depth Post"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CommitDepthRequest": {
+                "properties": {
+                    "remote_url": {
+                        "type": "string",
+                        "title": "Remote Url"
+                    },
+                    "start_ref": {
+                        "type": "string",
+                        "title": "Start Ref"
+                    },
+                    "max_depth": {
+                        "type": "integer",
+                        "title": "Max Depth",
+                        "default": -1
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "remote_url",
+                    "start_ref"
+                ],
+                "title": "CommitDepthRequest"
+            },
+            "CommitResponse": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "author": {
+                        "type": "string",
+                        "title": "Author"
+                    },
+                    "time": {
+                        "type": "integer",
+                        "title": "Time"
+                    },
+                    "parents": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Parents"
+                    },
+                    "depth": {
+                        "type": "integer",
+                        "title": "Depth"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "message",
+                    "author",
+                    "time",
+                    "parents",
+                    "depth"
+                ],
+                "title": "CommitResponse"
+            },
+            "ErrorResponse": {
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "title": "Error"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "error"
+                ],
+                "title": "ErrorResponse"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}
