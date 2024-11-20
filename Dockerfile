@@ -14,6 +14,8 @@ RUN npm ci
 COPY . .
 
 # 构建应用
+ARG REACT_APP_BACKEND_HOST
+ENV REACT_APP_BACKEND_HOST=$REACT_APP_BACKEND_HOST
 RUN npm run build
 
 # 生产阶段
@@ -22,8 +24,8 @@ FROM nginx:alpine
 # 复制构建产物到 Nginx 目录
 COPY --from=build /app/build /usr/share/nginx/html
 
-# 复制自定义 Nginx 配置（如果需要）
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 复制 nginx 配置
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 暴露 80 端口
 EXPOSE 80

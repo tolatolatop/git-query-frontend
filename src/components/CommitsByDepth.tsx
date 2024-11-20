@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, InputNumber, message } from 'antd';
 import { CommitResponse, CommitDepthRequest } from '../types/git';
 import CommitList from './CommitList';
+import { BACKEND_HOST } from '../config';
 
 const CommitsByDepth: React.FC = () => {
     const [commits, setCommits] = useState<CommitResponse[]>([]);
@@ -10,7 +11,7 @@ const CommitsByDepth: React.FC = () => {
     const onFinish = async (values: CommitDepthRequest) => {
         setLoading(true);
         try {
-            const response = await fetch('/commits/by-depth', {
+            const response = await fetch(`${BACKEND_HOST}/commits/by-depth`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

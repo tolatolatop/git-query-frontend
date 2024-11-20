@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { CommitResponse } from '../types/git';
 import CommitList from './CommitList';
+import { BACKEND_HOST } from '../config';
 
 const CommitsBetweenRefs: React.FC = () => {
     const [commits, setCommits] = useState<CommitResponse[]>([]);
@@ -15,7 +16,7 @@ const CommitsBetweenRefs: React.FC = () => {
         setLoading(true);
         try {
             const params = new URLSearchParams(values);
-            const response = await fetch(`/commits/?${params.toString()}`);
+            const response = await fetch(`${BACKEND_HOST}/commits/?${params.toString()}`);
             if (!response.ok) {
                 const error = await response.json();
                 throw new Error(error.error || '请求失败');
